@@ -7,9 +7,8 @@ module.exports = merge(common, {
     mode: 'development',
     devServer: {
         contentBase: path.join(__dirname, './dist'),
-        open: true,
-        hot: true,
-        port: 8080,
+        // hot: true,
+        // port: 8080,
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),

@@ -10,8 +10,139 @@
 <body>
     <header>
         <div class="container">
-            <div id="root"></div>
+            <nav class="navbar navbar-expand-lg navbar-light bg-transparent pl-0 pr-0">
+                <a class="navbar-brand text-info text-uppercase" href="#">Calendar</a>
+                <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                    <form class="form-inline my-2 my-lg-0">
+                        <div class="form-group mr-2">
+                            <select class="form-control" data-control-name="teamMembers"></select>
+                        </div>
+                        <button
+                            class="btn btn-success my-2 my-sm-0"
+                            type="button"
+                            data-toggle="modal"
+                            data-target="#formModal"
+                        >
+                            New event
+                        </button>
+                    </form>
+                </div>
+            </nav>
         </div>
     </header>
+    <main class="position-relative">
+        <!-- Form modal -->
+        <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="modal-body">
+                        <!-- here will alert errors -->
+                        <div class="form-meeting">
+                            <form>
+                                <div class="form-group">
+                                    <label for="nameEvent" class="form-label">Name of the event</label>
+                                    <input
+                                        id="nameEvent"
+                                        class="form-control input-meeting"
+                                        aria-describedby="inputGroup-sizing-sm"
+                                        type="text"
+                                        name="nameEvent"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label for="participants" class="form-label">Participants</label>
+                                    <select id="participants" class="form-control select-meeting">
+                                        <option selected>All</option>
+                                        <option>...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dayMeeting" class="form-label">Day</label>
+                                    <select id="dayMeeting" class="form-control select-meeting">
+                                        <option selected>Monday</option>
+                                        <option>...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="timeMeeting" class="form-label">Time</label>
+                                    <select id="timeMeeting" class="form-control select-meeting">
+                                        <option selected>14:00</option>
+                                        <option>...</option>
+                                    </select>
+                                </div>
+                                <div class="btn-container">
+                                    <div class="btn-item">
+                                        <button
+                                            type="submit"
+                                            class="btn btn-success button-meeting"
+                                        >
+                                            Create
+                                        </button>
+                                    </div>
+                                    <div class="btn-item">
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger button-meeting"
+                                            data-dismiss="modal"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        &lt;!&ndash; Event modal &ndash;&gt;-->
+<!--        <button-->
+<!--            class="btn btn-info"-->
+<!--            type="button"-->
+<!--            data-toggle="modal"-->
+<!--            data-target="#exampleModal2"-->
+<!--        >-->
+<!--            event for delete-->
+<!--        </button>-->
+<!--        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--            <div class="modal-dialog modal-dialog modal-dialog-centered">-->
+<!--                <div class="modal-content">-->
+<!--                    <div class="modal-body">-->
+<!--                        Are you sure you want to delete some event?-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer border-0 justify-content-center">-->
+<!--                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>-->
+<!--                        <button type="button" class="btn btn-success">Yes</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Alert Errors &ndash;&gt;-->
+<!--        <div class="alert-time">-->
+<!--            <div class="alert alert-danger alert-dismissible fade show" role="alert">-->
+<!--                <span>Failed to creat an event. Time slot is already booked</span>-->
+<!--                <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--                    <span aria-hidden="true">&times;</span>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+<!--        -->
+        <div id="tableContainer"></div>
+    </main>
 </body>
 </html>
