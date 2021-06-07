@@ -1,11 +1,4 @@
-const daysMapping = {
-    0: 'Sunday',
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-};
+import { daysMapping } from '../services/helper';
 
 function createEvent(tableEvent) {
     const eventWrapper = document.createElement('div');
@@ -22,7 +15,14 @@ function createEvent(tableEvent) {
     eventButton.className = 'event-button';
     eventButton.setAttribute('type', 'button');
     eventButton.setAttribute('id', 'buttonClose');
+    eventButton.setAttribute('data-toggle', 'modal');
+    eventButton.setAttribute('data-target', '#modalEvent');
 
+    eventButton.addEventListener('click', (eventEvent) => {
+        const modalBody = document.querySelector('#modalContentEvent');
+        modalBody.setAttribute('data-event-to-delete', tableEvent.id);
+        modalBody.innerHTML = `Are you sure you want to delete ${tableEvent.name} event?`;
+    });
     const span = document.createElement('span');
 
     const i = document.createElement('i');
@@ -38,8 +38,10 @@ function createEvent(tableEvent) {
 
 export default function renderEvents(tableEvents) {
     const tableCells = document.querySelectorAll('[data-cell-day]');
-    // eslint-disable-next-line no-param-reassign
-    tableCells.forEach((tableCell) => { tableCell.innerHTML = ''; });
+    tableCells.forEach((tableCell) => {
+        // eslint-disable-next-line no-param-reassign
+        tableCell.innerHTML = '';
+    });
 
     tableEvents.forEach((tableEvent) => {
         const eventDate = tableEvent && tableEvent.date ? new Date(tableEvent.date) : null;

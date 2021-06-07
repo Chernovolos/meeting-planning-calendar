@@ -1,14 +1,15 @@
 .table-meeting {
-   & thead {
-     & > tr > th {
-       color: white;
-       font-size: 14px;
-       letter-spacing: 2px;
-       text-align: center;
-       text-transform: uppercase;
-       background-color: black;
-     }
-   }
+
+  & thead {
+    & > tr > th {
+      color: white;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-align: center;
+      text-transform: uppercase;
+      background-color: black;
+    }
+  }
   .table-headline {
     text-align: center;
     & > th {
