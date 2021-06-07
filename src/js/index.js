@@ -4,13 +4,15 @@ import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import '../style/index.scss';
+import * as $ from 'jquery';
 
 import API from './services/api';
-import members from './mocks/members';
-import events from './mocks/events';
 import renderTable from './components/table';
 import addOptions from './components/options';
 import renderEvents from './components/event';
+import { getCalendarMode } from './services/helper';
+import initializeForm from './components/form';
+import errorAlert from './components/alert';
 
 function docReady(fn) {
     // see if DOM is already available
@@ -23,44 +25,141 @@ function docReady(fn) {
 }
 
 function initialize() {
-    const api = new API(members, events);
-
+    const api = new API();
     const membersSelect = document.querySelector('[data-control-name=teamMembers]');
+    const participantsSelect = document.getElementById('participants');
+    const nameSelect = document.getElementById('meetingName');
+    const daySelect = document.getElementById('meetingDay');
+    const timeSelect = document.getElementById('meetingTime');
+    const importEvents = document.querySelector('#importEvents');
+    const newEventButton = document.getElementById('newEvent');
+    const tableContainer = document.getElementById('tableContainer');
+
+    newEventButton.addEventListener('click', () => {
+        $('#formModal').modal('show');
+        $('.toast').toast('hide');
+    });
 
     // SETTING UP LISTENERS
-    membersSelect.addEventListener('change', ({ target }) => {
-        if (target.value === 'SELECT_ALL') {
-            // call some function and rerender table with all members (call function with no args)
+    membersSelect.addEventListener('change', (e) => {
+        e.preventDefault();
+        const member = membersSelect.value;
+        if (member === 'SELECT_ALL') {
+            api.getEvents()
+                .then((data) => {
+                    renderEvents(data);
+                })
+                .catch((error) => {
+                    const errorDescription = errorAlert(error);
+                    tableContainer.before(errorDescription);
+                });
         } else {
-            // call some function and rerender table for single member (send id to function)
+            api.getEventsById(member)
+                .then((data) => {
+                    renderEvents(data);
+                })
+                .catch((error) => {
+                    const errorDescription = errorAlert(error);
+                    tableContainer.before(errorDescription);
+                });
         }
+    });
+
+    importEvents.addEventListener('click', (event) => {
+        event.preventDefault();
+        api.importDefaultEvents()
+            .then((data) => {
+                api.getEvents()
+                    .then((events) => {
+                        renderEvents(events);
+                    })
+                    .catch((error) => {
+                        const errorDescription = errorAlert(error);
+                        tableContainer.before(errorDescription);
+                    });
+            });
+    });
+
+    const eventModalClose = document.querySelector('#btnEventClose');
+    eventModalClose.addEventListener('click', () => {
+        $('#modalEvent').modal('hide');
+    });
+
+    const eventModalButton = document.querySelector('#btnEventSuccess');
+    eventModalButton.addEventListener('click', (eventModalEvent) => {
+        const modalBody = document.querySelector('#modalContentEvent');
+        // eslint-disable-next-line radix
+        const eventId = modalBody.getAttribute('data-event-to-delete');
+        const calendarMode = getCalendarMode();
+        api.deleteEvent(eventId, calendarMode)
+            .then((deleteResponse) => {
+                if (calendarMode === 'SELECT_ALL') {
+                    api.getEvents()
+                        .then((getEventsResponse) => {
+                            renderEvents(getEventsResponse);
+                            $('#modalEvent').modal('hide');
+                        })
+                        .catch((error) => {
+                            const errorDescription = errorAlert(error);
+                            tableContainer.before(errorDescription);
+                        });
+                } else {
+                    api.getEventsById(calendarMode)
+                        .then((getEventsResponse) => {
+                            renderEvents(getEventsResponse);
+                            $('#modalEvent').modal('hide');
+                        })
+                        .catch((error) => {
+                            const errorDescription = errorAlert(error);
+                            tableContainer.before(errorDescription);
+                        });
+                }
+            })
+            .catch((error) => {
+                const errorDescription = errorAlert(error);
+                tableContainer.before(errorDescription);
+            });
     });
 
     return {
         membersSelect,
         api,
+        participantsSelect,
+        nameSelect,
+        daySelect,
+        timeSelect,
+        tableContainer,
     };
 }
 
 function main() {
-    const dates = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    const times = [10, 11, 12, 13, 14, 14, 16, 17, 18];
-    const { membersSelect, api } = initialize();
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const times = [10, 11, 12, 13, 14, 15, 16, 17, 18];
+    const {
+        membersSelect, api, participantsSelect, nameSelect, daySelect, timeSelect, tableContainer,
+    } = initialize();
+
+    renderTable(days, times);
 
     api.getMembers()
-        .then((date) => {
-            addOptions(date, membersSelect);
+        .then((data) => {
+            addOptions(data, membersSelect);
+            // eslint-disable-next-line max-len
+            initializeForm(data, days, times, participantsSelect, nameSelect, daySelect, timeSelect, api);
         })
         .catch((error) => {
-            console.log(error);
+            const errorDescription = errorAlert(error);
+            tableContainer.before(errorDescription);
         });
 
     api.getEvents()
-        .then((date) => {
-            renderEvents(date);
+        .then((data) => {
+            renderEvents(data);
+        })
+        .catch((error) => {
+            const errorDescription = errorAlert(error);
+            tableContainer.before(errorDescription);
         });
-
-    renderTable(dates, times);
 }
 
 docReady(main);

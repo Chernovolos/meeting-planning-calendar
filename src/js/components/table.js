@@ -28,7 +28,7 @@ export default function renderTable(tableDates, tableTimes) {
         const row = document.createElement('tr');
         row.className = 'table-headline';
         const timeTh = document.createElement('th');
-        timeTh.innerHTML = `${time}: 00`;
+        timeTh.innerHTML = `${time}:00`;
         row.appendChild(timeTh);
 
         tableDates.forEach((date) => {
@@ -46,5 +46,4 @@ export default function renderTable(tableDates, tableTimes) {
     } else {
         console.error();
     }
-    console.log('Table rendered');
 }
